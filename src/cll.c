@@ -11,7 +11,6 @@ struct node {
 
 // ? System Pointers
 struct node* HEAD = NULL;
-struct node* BASE = NULL;
 struct node* TAIL = NULL;
 
 // ? Insert Operations
@@ -21,7 +20,6 @@ void prepend(int data) {
   if (HEAD == NULL || TAIL == NULL) {
     HEAD = nn;
     TAIL = nn;
-    BASE = nn; // save first pointer during first allocation
     nn->next = nn;
     nn->prev = nn;
   } else {
@@ -39,14 +37,10 @@ void append(int data) {
   if (HEAD == NULL || TAIL == NULL) {
     HEAD = nn;
     TAIL = nn;
-    BASE = nn; // save first pointer during first allocation
     nn->next = nn;
     nn->prev = nn;
   } else {
-    struct node* cn = HEAD;
-    while (cn != TAIL) {
-      cn = cn->next;
-    }
+    struct node* cn = TAIL;
     nn->prev = cn;
     nn->next = HEAD;
     cn->next = nn;
@@ -55,7 +49,32 @@ void append(int data) {
     TAIL = nn;
   }
 }
-void insertAt(int pos, int data) {} // TODO
+void insertAt(size_t pos, int data) {
+  if (HEAD == NULL) {
+    prepend(data);
+    return;
+  }
+  struct node* nn = (struct node*) malloc(sizeof(struct node));
+  struct node* cn = HEAD;
+  nn->data = data;
+  for (size_t i = 0; i < pos; i++)
+  {
+    cn = cn->next;
+  }
+  
+  if (cn == TAIL) {
+    append(data);
+  } else {
+    struct node* pn = cn->prev;
+    // insert new node
+    pn->next = nn;
+    cn->prev = nn;
+    // link new node
+    nn->prev = pn;
+    nn->next = cn;
+  }
+  
+}
 
 // ? Delete Operations
 void removeLast() {
@@ -79,7 +98,6 @@ void removeFirst() {
     return;
   }
   if (HEAD == TAIL) {
-    // only one element
     free(HEAD);
     HEAD = NULL;
     TAIL = NULL;
@@ -116,8 +134,30 @@ void removeAt(size_t index) {
 // TODO: Traversal
 
 // ? Other
-void search(int value) {} // TODO
-void find(int value) {} // TODO
+int find(int value) {
+  if (HEAD == NULL) {
+    return -1;
+  }
+  struct node* cn = HEAD;
+  int x = 0;
+  do {
+    if(cn->data == value) {
+      return x;
+    }
+    cn = cn->next;
+    x++;
+  } while (cn != HEAD);
+  return -1;
+}
+void search(int value) {
+  int index = find(value);
+  if (index != -1) {
+    printf("%d found (%d).\n", value, index);
+  } else {
+    printf("%d not found (%d).\n", value, index);
+  }
+}
+
 
 // ? Utils
 void printList() {
@@ -173,15 +213,23 @@ void status() {
 }
 
 int main() {
+  removeFirst();
+  removeLast();
+  append(1);
+  insertAt(2,55);
+  
   for (int i = 0; i < 5; i++)
   {
     append(i);
   }
+  
   prepend(5);
   
-  removeAt(0);
-
+  // removeAt(0);
+  
   status();
   printList();
+  search(4);
+
   return EXIT_SUCCESS;
 }
