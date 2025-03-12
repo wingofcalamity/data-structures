@@ -10,17 +10,17 @@ OUT_CPP_FILES := $(SRC_CPP_FILES:$(SRC_DIR)/%.cpp=$(DIST_DIR)/%.xp)
 CC = gcc
 CXX = g++
 
-CFLAGS = -Wall -Wextra -std=c99
-CXXFLAGS = -Wall -Wextra -std=c++17
+CFLAGS = -Wall -Wextra -std=c99 
+CXXFLAGS = -Wall -Wextra -std=c++17 -D_DEBUG
 
 all: $(OUT_C_FILES) $(OUT_CPP_FILES)
 
 $(DIST_DIR)/%.x: $(SRC_DIR)/%.c
-	@mkdir -p $(DIST_DIR)  # Ensure dist directory exists
+	@mkdir -p $(DIST_DIR)
 	$(CC) $(CFLAGS) -o $@ $<
 
-$(DIST_DIR)/%.x: $(SRC_DIR)/%.cpp
-	@mkdir -p $(DIST_DIR)  # Ensure dist directory exists
+$(DIST_DIR)/%.xp: $(SRC_DIR)/%.cpp
+	@mkdir -p $(DIST_DIR)
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
 clean:

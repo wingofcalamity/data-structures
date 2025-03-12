@@ -76,6 +76,25 @@ void insertAt(size_t pos, int data) {
   
 }
 
+// TODO: Traversal
+
+// ? Find
+int find(int value) {
+  if (HEAD == NULL) {
+    return -1;
+  }
+  struct node* cn = HEAD;
+  int x = 0;
+  do {
+    if(cn->data == value) {
+      return x;
+    }
+    cn = cn->next;
+    x++;
+  } while (cn != HEAD);
+  return -1;
+}
+
 // ? Delete Operations
 void removeLast() {
   if (TAIL == NULL) {
@@ -130,34 +149,14 @@ void removeAt(size_t index) {
     free(cn);
   }
 }
-
-// TODO: Traversal
-
-// ? Other
-int find(int value) {
-  if (HEAD == NULL) {
-    return -1;
-  }
-  struct node* cn = HEAD;
-  int x = 0;
-  do {
-    if(cn->data == value) {
-      return x;
-    }
-    cn = cn->next;
-    x++;
-  } while (cn != HEAD);
-  return -1;
-}
-void search(int value) {
-  int index = find(value);
-  if (index != -1) {
-    printf("%d found (%d).\n", value, index);
+void removeVal(int val) {
+  int pos = find(val);
+  if (pos == -1) {
+    printf("Error removing %d: Data not found.\n", val);
   } else {
-    printf("%d not found (%d).\n", value, index);
+    removeAt(pos);
   }
 }
-
 
 // ? Utils
 void printList() {
@@ -211,6 +210,14 @@ void status() {
   printf("-----------------------------------------------------------------\n");
   printf("HEAD: %14p\nTAIL: %14p\n",HEAD,TAIL);
 }
+void search(int value) {
+  int index = find(value);
+  if (index != -1) {
+    printf("%d found (%d).\n", value, index);
+  } else {
+    printf("%d not found (%d).\n", value, index);
+  }
+}
 
 int main() {
   removeFirst();
@@ -227,9 +234,12 @@ int main() {
   
   // removeAt(0);
   
+  removeVal(55);
+  removeVal(77);
+  
   status();
   printList();
   search(4);
-
+  
   return EXIT_SUCCESS;
 }
