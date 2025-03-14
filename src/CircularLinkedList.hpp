@@ -26,14 +26,17 @@ template <class T> class CircularLinkedList {
       newNode->prev = newNode;
       newNode->next = newNode;
     }
-
     void insertBetween(NodePtr before, NodePtr insertee, NodePtr after) {
       before->next = insertee;
       after->prev = insertee;
       insertee->next = after;
       insertee->prev = before;
     }
-    
+    void removeBetween(NodePtr before, NodePtr remove, NodePtr after) {
+      before->next = after;
+      after->prev = before;
+      free(remove);
+    }
     NodePtr makeNode(T data) {
       return std::make_shared<Node>(data);
     }
